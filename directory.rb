@@ -13,6 +13,34 @@ students = [
   {name: "Joffrey Baratheon", cohort: :november},
   {name: "Norman Bates", cohort: :november}
 ]
+
+# prints names beginning with M only
+def print_names(students)
+  students.each_with_index do |student, index|
+    if student[:name][0] == "M"
+      puts "#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
+    end
+  end
+end
+
+# prints names if they are less than 12 characters
+def print_names(students)
+  students.each_with_index do |student, index|
+    if student[:name].length < 12
+      puts "#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
+    end
+  end
+end
+
+# using a while loop
+def print_names(students)
+  index = 0
+  while index < students.size
+    puts "#{index + 1}. #{students[index][:name]} (#{students[index][:cohort]} cohort)"
+    index += 1
+  end
+end
+
 =end
 def input_students
   puts "Enter the names of the students"
@@ -23,10 +51,17 @@ def input_students
   name = gets.chomp
   # while the name is not empty, repeat this code
   while !name.empty? do
-    # add the student has to the array
-    students << {name: name, cohort: :november}
+    # prompt for hobbies and height
+    puts "Enter their hobbies"
+    hobbies = gets.chomp
+    puts "Enter their height"
+    height = gets.chomp
+    # add the student hash to the array
+    students << {name: name.capitalize, hobbies: hobbies, height: height, cohort: :november}
+    # print current student total
     puts "Now we have #{students.count} students"
     # get another name from the user
+    puts "Enter another name"
     name = gets.chomp
   end
   # return the array of students
@@ -40,7 +75,7 @@ end
 
 def print_names(students)
   students.each_with_index do |student, index|
-    puts "#{index}. #{student[:name]} (#{student[:cohort]} cohort)"
+    puts "#{index + 1}. #{student[:name]}, #{student[:height]}cm, likes #{student[:hobbies]} (#{student[:cohort]} cohort)"
   end
 end
 
