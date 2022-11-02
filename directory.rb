@@ -59,7 +59,8 @@ def input_students
   while !name.empty? do
     # prompt for hobbies and height and cohort
     puts "Enter their hobbies"
-    hobbies = gets.chomp
+    # exercise 9
+    hobbies = gets.slice(0..-2)
     puts "Enter their height"
     height = gets.chomp
     puts "Enter their cohort month"
@@ -77,7 +78,7 @@ def input_students
     # add the student hash to the array
     students << {name: name.capitalize, hobbies: hobbies, height: height.to_i, cohort: cohort.to_sym}
     # print current student total
-    puts "Now we have #{students.count} #{students.count == 1 ? 'student' : 'students'}"
+    puts "Now we have #{students.count} #{students.count == 1 ? 'student' : 'students'} "
     # get another name from the user
     puts "Enter another name"
     name = gets.chomp
