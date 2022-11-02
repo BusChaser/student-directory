@@ -77,7 +77,7 @@ def input_students
     # add the student hash to the array
     students << {name: name.capitalize, hobbies: hobbies, height: height.to_i, cohort: cohort.to_sym}
     # print current student total
-    puts "Now we have #{students.count} students"
+    puts "Now we have #{students.count} #{students.count == 1 ? 'student' : 'students'}"
     # get another name from the user
     puts "Enter another name"
     name = gets.chomp
@@ -102,7 +102,7 @@ def print_names_by_cohort(students)
 end
 
 def print_footer(students)
-  puts "Overall, we have #{students.count} great students".center(100)
+  puts "Overall, we have #{students.count} great #{students.count == 1 ? 'student' : 'students'}".center(100)
 end
 
 # method calls
