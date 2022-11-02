@@ -51,13 +51,25 @@ def input_students
   name = gets.chomp
   # while the name is not empty, repeat this code
   while !name.empty? do
-    # prompt for hobbies and height
+    # prompt for hobbies and height and cohort
     puts "Enter their hobbies"
     hobbies = gets.chomp
     puts "Enter their height"
     height = gets.chomp
+    puts "Enter their cohort month"
+    cohort = gets.chomp.downcase
+
+    # create array of valid cohort months to see if user input is valid
+    valid_months = ["","january","february","march","april","may","june","july","august","september","october","november","december"]
+    until valid_months.any? {|valid_month| valid_month == cohort }
+      puts "Invalid month entered, try again"
+      puts "Enter their cohort month"
+      cohort = gets.chomp.downcase
+    end
+    cohort = :default if cohort.empty?
+    
     # add the student hash to the array
-    students << {name: name.capitalize, hobbies: hobbies, height: height, cohort: :november}
+    students << {name: name.capitalize, hobbies: hobbies, height: height.to_i, cohort: cohort.to_sym}
     # print current student total
     puts "Now we have #{students.count} students"
     # get another name from the user
@@ -69,18 +81,18 @@ def input_students
 end 
 
 def print_header
-  puts "The students of Villains Academy"
-  puts "-------------"
+  puts "The students of Villains Academy".center(80)
+  puts "------------------------------------".center(80)
 end
 
 def print_names(students)
   students.each_with_index do |student, index|
-    puts "#{index + 1}. #{student[:name]}, #{student[:height]}cm, likes #{student[:hobbies]} (#{student[:cohort]} cohort)"
+    puts "#{index + 1}. #{student[:name]}, #{student[:height]}cm, likes #{student[:hobbies]} (#{student[:cohort]} cohort)".center(80)
   end
 end
 
 def print_footer(students)
-  puts "Overall, we have #{students.count} great students"
+  puts "Overall, we have #{students.count} great students".center(80)
 end
 
 # method calls
