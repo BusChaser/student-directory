@@ -1,19 +1,5 @@
 =begin
 
-students = [
-  {name: "Dr. Hannibal Lecter", cohort: :november},
-  {name: "Darth Vader", cohort: :november},
-  {name: "Nurse Ratched", cohort: :november},
-  {name: "Michael Corleone", cohort: :november},
-  {name: "Alex DeLarge", cohort: :november},
-  {name: "The Wicked Witch of the West", cohort: :november},
-  {name: "Terminator", cohort: :november},
-  {name: "Freddy Krueger", cohort: :november},
-  {name: "The Joker", cohort: :november},
-  {name: "Joffrey Baratheon", cohort: :november},
-  {name: "Norman Bates", cohort: :november}
-]
-
 # prints names beginning with M only
 def print_names(students)
   students.each_with_index do |student, index|
@@ -48,6 +34,7 @@ def print_names(students)
 end
 
 =end
+
 def input_students
   puts "Enter the names of the students"
   puts "Press return twice to finish"
@@ -57,10 +44,9 @@ def input_students
   name = gets.chomp
   # while the name is not empty, repeat this code
   while !name.empty? do
-    # prompt for hobbies and height and cohort
+    # prompt for hobbies, height and cohort and read user input
     puts "Enter their hobbies"
-    # exercise 9
-    hobbies = gets.slice(0..-2)
+    hobbies = gets.slice(0..-2) # exercise 9: alternative to using chomp()
     puts "Enter their height"
     height = gets.chomp
     puts "Enter their cohort month"
@@ -93,7 +79,9 @@ def print_header
 end
 
 def print_names_by_cohort(students)
+  # make an array of all the cohorts in the student list
   active_cohorts = students.collect { |student| student[:cohort]}.uniq
+  # for each active cohort print the cohort month along with all of its students
   active_cohorts.each do |cohort|
     puts "*** #{cohort.capitalize} cohort ***".center(100)
     students.each do |student|
@@ -107,7 +95,11 @@ def print_footer(students)
 end
 
 # method calls
-students = input_students
-print_header()
-print_names_by_cohort(students)
-print_footer(students)
+students = input_students()
+if students.count > 0
+  print_header()
+  print_names_by_cohort(students)
+  print_footer(students)
+else
+  puts "No students were entered."
+end
