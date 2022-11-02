@@ -1,5 +1,5 @@
-# store students in an array
 =begin
+
 students = [
   {name: "Dr. Hannibal Lecter", cohort: :november},
   {name: "Darth Vader", cohort: :november},
@@ -41,6 +41,12 @@ def print_names(students)
   end
 end
 
+def print_names(students)
+  students.each_with_index do |student, index|
+    puts "#{index + 1}. #{student[:name]}, #{student[:height]}cm, likes #{student[:hobbies]} (#{student[:cohort]} cohort)".center(80)
+  end
+end
+
 =end
 def input_students
   puts "Enter the names of the students"
@@ -67,7 +73,7 @@ def input_students
       cohort = gets.chomp.downcase
     end
     cohort = :default if cohort.empty?
-    
+
     # add the student hash to the array
     students << {name: name.capitalize, hobbies: hobbies, height: height.to_i, cohort: cohort.to_sym}
     # print current student total
@@ -81,22 +87,26 @@ def input_students
 end 
 
 def print_header
-  puts "The students of Villains Academy".center(80)
-  puts "------------------------------------".center(80)
+  puts "The students of Villains Academy".center(100)
+  puts "------------------------------------".center(100)
 end
 
-def print_names(students)
-  students.each_with_index do |student, index|
-    puts "#{index + 1}. #{student[:name]}, #{student[:height]}cm, likes #{student[:hobbies]} (#{student[:cohort]} cohort)".center(80)
+def print_names_by_cohort(students)
+  active_cohorts = students.collect { |student| student[:cohort]}.uniq
+  active_cohorts.each do |cohort|
+    puts "*** #{cohort.capitalize} cohort ***".center(100)
+    students.each do |student|
+      puts "#{student[:name]} is #{student[:height]}cm tall and likes #{student[:hobbies]}.".center(100) if student[:cohort] == cohort
+    end
   end
 end
 
 def print_footer(students)
-  puts "Overall, we have #{students.count} great students".center(80)
+  puts "Overall, we have #{students.count} great students".center(100)
 end
 
 # method calls
 students = input_students
 print_header()
-print_names(students)
+print_names_by_cohort(students)
 print_footer(students)
