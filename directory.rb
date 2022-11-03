@@ -52,9 +52,9 @@ def input_students
     puts "Enter their cohort month"
     cohort = gets.chomp.downcase
 
-    # create array of valid cohort months to see if user input is valid
+    # create array of valid cohort months to see if the cohort the user entered is valid
     valid_months = ["","january","february","march","april","may","june","july","august","september","october","november","december"]
-    until valid_months.any? {|valid_month| valid_month == cohort }
+    until valid_months.include?(cohort)
       puts "Invalid month entered, try again"
       puts "Enter their cohort month"
       cohort = gets.chomp.downcase
@@ -80,7 +80,7 @@ end
 
 def print_names_by_cohort(students)
   # make an array of all the cohorts in the student list
-  active_cohorts = students.collect { |student| student[:cohort]}.uniq
+  active_cohorts = students.collect {|student| student[:cohort]}.uniq
   # for each active cohort print the cohort month along with all of its students
   active_cohorts.each do |cohort|
     puts "*** #{cohort.capitalize} cohort ***".center(100)
@@ -94,12 +94,32 @@ def print_footer(students)
   puts "Overall, we have #{students.count} great #{students.count == 1 ? 'student' : 'students'}".center(100)
 end
 
+def interactive_menu
+  students = []
+  loop do
+    # 1. print the menu
+    puts "--- Menu ---"
+    puts "1. Input the students"
+    puts "2. Show the students"
+    puts "9. Exit"
+    print "Enter a choice: "
+    # 2. read the input, save it in a a variable
+    choice = gets.chomp
+    # 3. do what the user has asked
+    case choice
+      when "1"
+        students = input_students()
+      when "2"  
+        print_header()
+        print_names_by_cohort(students)
+        print_footer(students)
+      when "9"
+        exit
+      else
+        puts "Invalid choice, try again"
+      end
+    end
+  end
+
 # method calls
-students = input_students()
-if students.count > 0
-  print_header()
-  print_names_by_cohort(students)
-  print_footer(students)
-else
-  puts "No students were entered."
-end
+interactive_menu()
