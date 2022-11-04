@@ -1,166 +1,108 @@
-=begin
-
-# prints names beginning with M only
-def print_names(students)
-  students.each_with_index do |student, index|
-    if student[:name][0] == "M"
-      puts "#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
-    end
-  end
-end
-
-# prints names if they are less than 12 characters
-def print_names(students)
-  students.each_with_index do |student, index|
-    if student[:name].length < 12
-      puts "#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
-    end
-  end
-end
-
-# using a while loop
-def print_names(students)
-  index = 0
-  while index < students.size
-    puts "#{index + 1}. #{students[index][:name]} (#{students[index][:cohort]} cohort)"
-    index += 1
-  end
-end
-
-def print_names(students)
-  students.each_with_index do |student, index|
-    puts "#{index + 1}. #{student[:name]}, #{student[:height]}cm, likes #{student[:hobbies]} (#{student[:cohort]} cohort)".center(80)
-  end
-end
-
-=end
-
-@students = []
-
-def input_students
-  puts "Enter the names of the students"
-  puts "Press return twice to finish"
-  # get the first name
-  name = STDIN.gets.chomp
-  # while the name is not empty, repeat this code
-  while !name.empty? do
-    # prompt for hobbies, height and cohort and read user input
-    puts "Enter their hobbies"
-    hobbies = STDIN.gets.slice(0..-2) # exercise 9: alternative to using chomp()
-    puts "Enter their height"
-    height = STDIN.gets.chomp
-    puts "Enter their cohort month"
-    cohort = STDIN.gets.chomp.downcase
-
-    # create array of valid cohort months to see if the cohort the user entered is valid
-    valid_months = ["","january","february","march","april","may","june","july","august","september","october","november","december"]
-    until valid_months.include?(cohort)
-      puts "Invalid month entered, try again"
-      puts "Enter their cohort month"
-      cohort = STDIN.gets.chomp.downcase
-    end
-    cohort = :default if cohort.empty?
-
-    # add the student hash to the array
-    @students << {name: name.capitalize, hobbies: hobbies, height: height.to_i, cohort: cohort.to_sym}
-    # print current student total
-    puts "Now we have #{@students.count} #{@students.count == 1 ? 'student' : 'students'} "
-    # get another name from the user
-    puts "Enter another name"
-    name = STDIN.gets.chomp
-  end
-end 
-
-def print_header
-  puts "The students of Villains Academy".center(100)
-  puts "------------------------------------".center(100)
-end
-
-def print_students_by_cohort
-  # make an array of all the cohorts in the student list
-  active_cohorts = @students.collect {|student| student[:cohort]}.uniq
-  # for each active cohort print the cohort month along with all of its students
-  active_cohorts.each do |cohort|
-    puts "*** #{cohort.capitalize} cohort ***".center(100)
-    @students.each do |student|
-      puts "#{student[:name]} is #{student[:height]}cm tall and likes #{student[:hobbies]}.".center(100) if student[:cohort] == cohort
-    end
-  end
-end
-
-def print_footer
-  puts "Overall, we have #{@students.count} great #{@students.count == 1 ? 'student' : 'students'}".center(100)
-end
+@students = [] # an empty array accessible to all methods
 
 def print_menu
-  puts "--- Menu ---"
   puts "1. Input the students"
   puts "2. Show the students"
   puts "3. Save the list to students.csv"
   puts "4. Load the list from students.csv"
-  puts "9. Exit"
-  print "Enter a choice: "
-end
-
-def show_students
-  print_header()
-  print_students_by_cohort()
-  print_footer()
-end
-
-def process_choice(choice)
-  case choice
-    when "1"
-      input_students()
-    when "2"  
-      show_students()
-    when "3"
-      save_students()
-    when "4"
-      load_students()
-    when "9"
-      exit
-    else
-      puts "Invalid choice, try again"
-  end
+  puts "9. Exit" # 9 because we'll be adding more items
 end
 
 def interactive_menu
   loop do
     print_menu()
-    process_choice(STDIN.gets.chomp)
+    process(STDIN.gets.chomp)
   end
+end
+
+def process(selection)
+  case selection
+    when "1"
+      input_students()
+    when "2"
+      show_students()
+    when "9"
+      exit # this will cause the program to terminate
+    when "3"
+      save_students()
+    when "4"
+      load_students()
+    else
+      puts "I don't know what you meant, try again"
+  end
+end
+
+def add_student(name, cohort = :november)
+  @students << {name: name, cohort: cohort}
+end
+
+
+def input_students
+  puts "Please enter the names of the students"
+  puts "To finish, just hit return twice"
+  # get the first name
+  name = STDIN.gets.chomp
+  # while the name is not empty, repeat this code
+  while !name.empty? do
+    # add the student hash to the array
+    add_student(name)
+    puts "Now we have #{@students.count} student#{'s' if @students.count > 1}"
+    # get another name from the user
+    name = STDIN.gets.chomp
+  end
+end
+
+def show_students
+  print_header()
+  print_student_list()
+  print_footer()
+end
+
+def print_header
+  puts "The students of Villains Academy"
+  puts "-------------"
+end
+
+def print_student_list
+  @students.each {|student| puts "#{student[:name]} (#{student[:cohort]} cohort)"}
+end
+
+def print_footer
+  puts "Overall, we have #{@students.count} great student#{'s' if @students.count > 1}"
 end
 
 def save_students
-  # open (also create in this case?) a new file in write mode, save the file obj as a variable
+  # open the file for writing
   file = File.open("students.csv", "w")
-  # iterate over the array of students, make an array of each student's info, convert to csv string and store the line in a file
-  @students.each {|student| file.puts [student[:name], student[:cohort]].join(",") }
+  # iterate over the array of students
+  @students.each do |student|
+    student_data = [student[:name], student[:cohort]]
+    csv_line = student_data.join(",")
+    file.puts csv_line
+  end
   file.close
-  print "\nList written to students.csv\n\n"
 end
 
 def load_students(filename = "students.csv")
-  # if a filename was given as a command line argument
-  if ARGV.first
-    # then use the that arg as the filename to load, if the file exists
-    filename = ARGV.first
-    if !File.exist?(filename)
-      puts "#{filename} does not exist, exiting program..."
-      exit
-    end
-  end
-      
   file = File.open(filename, "r")
   file.readlines.each do |line|
     name, cohort = line.chomp.split(",")
-    @students << {name: name, cohort: cohort.to_sym}
+    add_student(name, cohort.to_sym)
   end
   file.close
-  print "\nLoaded #{@students.count} students from #{filename}\n\n"
 end
 
+def try_load_students
+  filename = ARGV.first# first argument from the command line
+  return if filename.nil? # get out of the method if it isn't given
+  if File.exists?(filename) # if it exists
+    load_students(filename)
+    puts "Loaded #{@students.count} from #{filename}"
+  else # if it doesn't exist
+    puts "Sorry, #{filename} doesn't exist."
+    exit # quit the program
+  end
+end
 
-# method calls
+try_load_students()
 interactive_menu()
