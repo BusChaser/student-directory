@@ -4,7 +4,7 @@ def print_menu
   puts "\n---- Main Menu ----"
   puts "1. Input the students"
   puts "2. Show the students"
-  puts "3. Save the list a file"
+  puts "3. Save the list to a file"
   puts "4. Load the list from a file"
   puts "9. Exit" # 9 because we'll be adding more items
   print "\nEnter a choice: "
@@ -33,9 +33,10 @@ def add_student(name, cohort = :november)
 end
 
 def custom_filename
-  puts "Enter a file to write to (including extension, e.g. names.txt)"
+  puts "\nEnter a file to write to (including extension, e.g. names.txt)"
   puts "To use the default (students.csv) press RETURN"
-  STDIN.gets.chomp
+  filename = STDIN.gets.chomp
+  filename.empty? ? "students.csv" : filename
 end
 
 def input_students
@@ -65,23 +66,22 @@ def print_student_list
 end
 
 def print_footer
+  puts "----------------------------------"
   puts "Overall, we have #{@students.count} great student#{'s' if @students.count != 1}\n"
 end
 
-def save_students
+def save_students(filename)
   # open the file for writing
-  
   puts "\nAttempting to write student list to #{filename}"
-  file = File.open(filename, "w")
-  # iterate over the array of students, write a line to the file containing the student's info seperated by a comma
-  @students.each {|student| file.puts [student[:name], student[:cohort]].join(",")}
-  file.close
-  puts "File write successful"
+  File.open(filename, "w") do |file|
+    # iterate over the array of students, write a line to the file containing the student's info seperated by a comma
+    @students.each {|student| file.puts [student[:name], student[:cohort]].join(",")}
+  end
+  puts "Successfully added #{@students.count} student#{'s' if @students.count != 1} to #{filename}"
 end
 
 def load_students(filename = "students.csv")
-  puts "Attempting to load student list from #{filename} ..."
-
+  puts "\nAttempting to load student list from #{filename} ..."
   if !File.exists?(filename)
     puts "Failed to load, file doesn't exist"
     return
@@ -89,16 +89,16 @@ def load_students(filename = "students.csv")
     puts "Failed to load, file is empty"
     return
   else
-    file = File.open(filename, "r")
-    file.readlines.each do |line|
-      name, cohort = line.chomp.split(",")
-      add_student(name, cohort)
+    @students = [] # empty current student list
+    File.open(filename, "r") do |file|
+      file.readlines.each do |line|
+        name, cohort = line.chomp.split(",")
+        add_student(name, cohort)
+      end        
     end
   end
-
-  file.close
-  puts "Loaded #{@students.count} from #{filename}"
+  puts "Loaded #{@students.count} student#{'s' if @students.count != 1} from #{filename}"
 end
 
-load_students(ARGV.first if !ARGV.first.nil?)
+load_students(ARGV.first.nil? ? "students.csv" : ARGV.first)
 interactive_menu()
