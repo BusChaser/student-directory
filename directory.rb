@@ -41,23 +41,23 @@ def input_students
   puts "Enter the names of the students"
   puts "Press return twice to finish"
   # get the first name
-  name = gets.chomp
+  name = STDIN.gets.chomp
   # while the name is not empty, repeat this code
   while !name.empty? do
     # prompt for hobbies, height and cohort and read user input
     puts "Enter their hobbies"
-    hobbies = gets.slice(0..-2) # exercise 9: alternative to using chomp()
+    hobbies = STDIN.gets.slice(0..-2) # exercise 9: alternative to using chomp()
     puts "Enter their height"
-    height = gets.chomp
+    height = STDIN.gets.chomp
     puts "Enter their cohort month"
-    cohort = gets.chomp.downcase
+    cohort = STDIN.gets.chomp.downcase
 
     # create array of valid cohort months to see if the cohort the user entered is valid
     valid_months = ["","january","february","march","april","may","june","july","august","september","october","november","december"]
     until valid_months.include?(cohort)
       puts "Invalid month entered, try again"
       puts "Enter their cohort month"
-      cohort = gets.chomp.downcase
+      cohort = STDIN.gets.chomp.downcase
     end
     cohort = :default if cohort.empty?
 
@@ -67,7 +67,7 @@ def input_students
     puts "Now we have #{@students.count} #{@students.count == 1 ? 'student' : 'students'} "
     # get another name from the user
     puts "Enter another name"
-    name = gets.chomp
+    name = STDIN.gets.chomp
   end
 end 
 
@@ -128,7 +128,7 @@ end
 def interactive_menu
   loop do
     print_menu()
-    process_choice(gets.chomp)
+    process_choice(STDIN.gets.chomp)
   end
 end
 
@@ -141,14 +141,24 @@ def save_students
   print "\nList written to students.csv\n\n"
 end
 
-def load_students
-  file = File.open("students.csv", "r")
+def load_students(filename = "students.csv")
+  # if a filename was given as a command line argument
+  if ARGV.first
+    # then use the that arg as the filename to load, if the file exists
+    filename = ARGV.first
+    if !File.exist?(filename)
+      puts "#{filename} does not exist, exiting program..."
+      exit
+    end
+  end
+      
+  file = File.open(filename, "r")
   file.readlines.each do |line|
     name, cohort = line.chomp.split(",")
     @students << {name: name, cohort: cohort.to_sym}
   end
   file.close
-  print "\nList loaded succesfully\n\n"
+  print "\nLoaded #{@students.count} students from #{filename}\n\n"
 end
 
 
