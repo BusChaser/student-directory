@@ -97,6 +97,7 @@ def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
   puts "3. Save the list to students.csv"
+  puts "4. Load the list from students.csv"
   puts "9. Exit"
   print "Enter a choice: "
 end
@@ -115,6 +116,8 @@ def process_choice(choice)
       show_students()
     when "3"
       save_students()
+    when "4"
+      load_students()
     when "9"
       exit
     else
@@ -135,7 +138,19 @@ def save_students
   # iterate over the array of students, make an array of each student's info, convert to csv string and store the line in a file
   @students.each {|student| file.puts [student[:name], student[:cohort]].join(",") }
   file.close
+  print "\nList written to students.csv\n\n"
 end
+
+def load_students
+  file = File.open("students.csv", "r")
+  file.readlines.each do |line|
+    name, cohort = line.chomp.split(",")
+    @students << {name: name, cohort: cohort.to_sym}
+  end
+  file.close
+  print "\nList loaded succesfully\n\n"
+end
+
 
 # method calls
 interactive_menu()
